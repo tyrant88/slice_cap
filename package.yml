@@ -2,7 +2,7 @@ package: slice_cap
 
 version: '1.1.0'
 author: 'LuS'
-supportpage: https://lautundschoen.de/
+supportpage: https://github.com/Laut-und-Schoen/slice_cap
 
 requires:
     php:
