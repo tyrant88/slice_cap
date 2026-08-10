@@ -1,0 +1,12 @@
+package: slice_cap
+
+version: '1.0.0'
+author: 'LuS'
+supportpage: https://lautundschoen.de/
+
+requires:
+    php:
+        version: '>=8.1'
+    redaxo: ^5.18
+    packages:
+        structure/content: '^2.11'

@@ -1,0 +1,18 @@
+slice_cap_perm = Blöcke kopieren, ausschneiden und einfügen
+
+slice_cap_copy = Block kopieren
+slice_cap_cut = Block ausschneiden
+
+slice_cap_copy_done = Block {0} liegt in der Zwischenablage.
+slice_cap_cut_done = Block {0} liegt in der Zwischenablage und wird beim Einfügen verschoben.
+slice_cap_cleared = Die Zwischenablage wurde geleert.
+
+slice_cap_paste_copy = Kopie von »{0}« aus »{1}« einfügen
+slice_cap_paste_cut = »{0}« aus »{1}« hierher verschieben
+
+slice_cap_pasted = Der Block wurde eingefügt.
+slice_cap_source_removed = Der Block wurde an seiner alten Stelle entfernt.
+
+slice_cap_clipboard_empty = Die Zwischenablage ist leer.
+slice_cap_slice_gone = Der Block in der Zwischenablage existiert nicht mehr.
+slice_cap_module_not_allowed = Das Modul dieses Blocks ist an dieser Stelle nicht erlaubt.

@@ -1,0 +1,18 @@
+slice_cap_perm = Copy, cut and paste slices
+
+slice_cap_copy = Copy slice
+slice_cap_cut = Cut slice
+
+slice_cap_copy_done = Slice {0} is on the clipboard.
+slice_cap_cut_done = Slice {0} is on the clipboard and will be moved when pasted.
+slice_cap_cleared = The clipboard has been cleared.
+
+slice_cap_paste_copy = Paste a copy of "{0}" from "{1}"
+slice_cap_paste_cut = Move "{0}" from "{1}" here
+
+slice_cap_pasted = The slice has been pasted.
+slice_cap_source_removed = The slice has been removed from its previous position.
+
+slice_cap_clipboard_empty = The clipboard is empty.
+slice_cap_slice_gone = The slice on the clipboard no longer exists.
+slice_cap_module_not_allowed = This slice's module is not allowed at this position.

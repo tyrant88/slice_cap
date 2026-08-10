@@ -1,0 +1,41 @@
+/* Icons: be_style bringt kein rex-icon-copy/-cut mit, also FontAwesome-Glyphen selbst setzen */
+.rex-icon-slice-cap-copy:before {
+    content: "\f0c5";
+    font-weight: 400;
+}
+
+.rex-icon-slice-cap-cut:before {
+    content: "\f0c4";
+}
+
+/* Der Block, der gerade in der Zwischenablage liegt */
+.slice-cap-btn-active,
+.slice-cap-btn-active:hover,
+.slice-cap-btn-active:focus {
+    background-color: #4b9ad9;
+    border-color: #4b9ad9;
+    color: #fff;
+}
+
+.slice-cap-paste {
+    border-bottom: 1px solid #ccc;
+}
+
+.slice-cap-paste > a:before {
+    display: inline-block;
+    font: normal normal 400 14px/1 "Font Awesome 6 Free", FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin-right: 6px;
+}
+
+.slice-cap-paste-copy > a:before {
+    content: "\f0c5";
+}
+
+.slice-cap-paste-cut > a:before {
+    content: "\f0c4";
+    font-weight: 900;
+}
