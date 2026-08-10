@@ -68,7 +68,7 @@ final class SliceCapBackend
             $label = rex_i18n::msg('slice_cap_' . $action);
             $isActive = $sliceId === $clipboardId && $action === $clipboardAction;
 
-            $classes = ['slice-cap-btn', 'slice-cap-btn-' . $action];
+            $classes = ['btn-default', 'slice-cap-btn', 'slice-cap-btn-' . $action];
             if ($isActive) {
                 $classes[] = 'slice-cap-btn-active';
             }
