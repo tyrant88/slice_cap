@@ -24,6 +24,7 @@ final class SliceCap
     public const ACTION_CUT = 'cut';
 
     private const SESSION_KEY = 'slice_cap_clipboard';
+    private const FLASH_KEY = 'slice_cap_flash';
 
     /**
      * Spalten, die beim Einfügen nicht vom Quell-Block übernommen werden:
@@ -170,6 +171,43 @@ final class SliceCap
         }
 
         return (int) rex_article_revision::getSessionArticleRevision($articleId);
+    }
+
+    /**
+     * Meldung für die nächste Ausgabe der Content-Seite vormerken.
+     *
+     * Bewusst nicht über die Message des rex_api_result: der Core gibt die
+     * zweimal aus — einmal global (content.php, rex_api_function::getMessage)
+     * und einmal am Block der aktuellen slice_id (content.edit.php füllt damit
+     * $info, article_content_editor rendert es "at current slice"). Über die
+     * Session bleibt die Meldung ausserdem über den Redirect nach dem Einfügen
+     * erhalten.
+     */
+    public static function flash(string $message, bool $success = true): void
+    {
+        \rex_login::startSession();
+        \rex_set_session(self::FLASH_KEY, ['message' => $message, 'success' => $success]);
+    }
+
+    /**
+     * Die vorgemerkte Meldung, fertig formatiert — und danach verbraucht.
+     */
+    public static function takeFlash(): ?string
+    {
+        \rex_login::startSession();
+
+        /** @var array{message?: string, success?: bool} $flash */
+        $flash = \rex_session(self::FLASH_KEY, 'array', []);
+
+        if (!isset($flash['message']) || '' === $flash['message']) {
+            return null;
+        }
+
+        \rex_unset_session(self::FLASH_KEY);
+
+        return ($flash['success'] ?? true)
+            ? \rex_view::success($flash['message'])
+            : \rex_view::warning($flash['message']);
     }
 
     /**

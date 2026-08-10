@@ -8,6 +8,9 @@ use slice_cap\SliceCap;
  * `$published = false` erzwingt Backend-Kontext UND eine gültige Session,
  * `requiresCsrfProtection()` erzwingt das Token — beides übernimmt der Core in
  * rex_api_function::handleCall().
+ *
+ * Die Meldungen an den Redakteur laufen nicht über die Message des
+ * rex_api_result, sondern über SliceCap::flash() — siehe dort, warum.
  */
 class rex_api_slice_cap extends rex_api_function
 {
@@ -18,7 +21,7 @@ class rex_api_slice_cap extends rex_api_function
         $user = rex::requireUser();
 
         if (!SliceCap::mayUse($user)) {
-            throw new rex_api_exception(rex_i18n::msg('no_rights_to_this_function'));
+            return $this->fail(rex_i18n::msg('no_rights_to_this_function'));
         }
 
         $action = rex_request('slice_cap_action', 'string');
@@ -26,6 +29,8 @@ class rex_api_slice_cap extends rex_api_function
         return match ($action) {
             SliceCap::ACTION_COPY, SliceCap::ACTION_CUT => $this->remember($action),
             'paste' => $this->paste(),
+            // Kein fail(): eine unbekannte Aktion ist ein Programmierfehler,
+            // keine Rueckmeldung an den Redakteur.
             default => throw new rex_api_exception('Unknown slice_cap action "' . $action . '"'),
         };
     }
@@ -48,7 +53,7 @@ class rex_api_slice_cap extends rex_api_function
         $sliceId = rex_request('slice_id', 'int');
 
         if (!SliceCap::mayEditArticle($user, $articleId, $clang)) {
-            throw new rex_api_exception(rex_i18n::msg('no_rights_to_this_function'));
+            return $this->fail(rex_i18n::msg('no_rights_to_this_function'));
         }
 
         $row = SliceCap::findSlice($sliceId);
@@ -56,22 +61,24 @@ class rex_api_slice_cap extends rex_api_function
         // Der Block muss zu dem Artikel gehoeren, dessen Rechte oben geprueft
         // wurden — sonst waeren ueber die ID fremde Bloecke adressierbar.
         if (null === $row || $articleId !== (int) $row['article_id'] || $clang !== (int) $row['clang_id']) {
-            throw new rex_api_exception(rex_i18n::msg('no_rights_to_this_function'));
+            return $this->fail(rex_i18n::msg('no_rights_to_this_function'));
         }
 
         if (!$user->getComplexPerm('modules')->hasPerm((int) $row['module_id'])) {
-            throw new rex_api_exception(rex_i18n::msg('no_rights_to_this_function'));
+            return $this->fail(rex_i18n::msg('no_rights_to_this_function'));
         }
 
         if ($sliceId === SliceCap::getSliceId() && $action === SliceCap::getAction()) {
             SliceCap::clear();
+            SliceCap::flash(rex_i18n::msg('slice_cap_cleared'));
 
-            return new rex_api_result(true, rex_i18n::msg('slice_cap_cleared'));
+            return new rex_api_result(true);
         }
 
         SliceCap::put($sliceId, $action);
+        SliceCap::flash(rex_i18n::msg('slice_cap_' . $action . '_done', $sliceId));
 
-        return new rex_api_result(true, rex_i18n::msg('slice_cap_' . $action . '_done', $sliceId));
+        return new rex_api_result(true);
     }
 
     private function paste(): rex_api_result
@@ -85,20 +92,20 @@ class rex_api_slice_cap extends rex_api_function
         $anchorId = rex_request('slice_id', 'int', -1);
 
         if (!SliceCap::mayEditArticle($user, $articleId, $clang)) {
-            throw new rex_api_exception(rex_i18n::msg('no_rights_to_this_function'));
+            return $this->fail(rex_i18n::msg('no_rights_to_this_function'));
         }
 
         $action = SliceCap::getAction();
         $row = SliceCap::getSlice();
 
         if (null === $action) {
-            throw new rex_api_exception(rex_i18n::msg('slice_cap_clipboard_empty'));
+            return $this->fail(rex_i18n::msg('slice_cap_clipboard_empty'));
         }
 
         if (null === $row) {
             SliceCap::clear();
 
-            throw new rex_api_exception(rex_i18n::msg('slice_cap_slice_gone'));
+            return $this->fail(rex_i18n::msg('slice_cap_slice_gone'));
         }
 
         $moduleId = (int) $row['module_id'];
@@ -108,11 +115,11 @@ class rex_api_slice_cap extends rex_api_function
             !SliceCap::mayEditArticle($user, (int) $row['article_id'], (int) $row['clang_id'])
             || !$user->getComplexPerm('modules')->hasPerm($moduleId)
         ) {
-            throw new rex_api_exception(rex_i18n::msg('no_rights_to_this_function'));
+            return $this->fail(rex_i18n::msg('no_rights_to_this_function'));
         }
 
         if (!SliceCap::templateAllowsModule($articleId, $clang, $ctype, $moduleId)) {
-            throw new rex_api_exception(rex_i18n::msg('slice_cap_module_not_allowed'));
+            return $this->fail(rex_i18n::msg('slice_cap_module_not_allowed'));
         }
 
         $revision = SliceCap::getRevision($articleId);
@@ -137,12 +144,25 @@ class rex_api_slice_cap extends rex_api_function
             $message .= ' ' . rex_i18n::msg('slice_cap_source_removed');
         }
 
-        $result = new rex_api_result(true, $message);
+        SliceCap::flash($message);
+
+        $result = new rex_api_result(true);
         // Nach dem Einfuegen auf die Seite ohne API-Parameter umleiten, damit ein
         // Reload den Block nicht ein zweites Mal anlegt.
         $result->setRequiresReboot(true);
 
         return $result;
+    }
+
+    /**
+     * Fehlermeldung an den Redakteur — ebenfalls über den Flash, damit sie
+     * nicht doppelt erscheint.
+     */
+    private function fail(string $message): rex_api_result
+    {
+        SliceCap::flash($message, false);
+
+        return new rex_api_result(false);
     }
 
     /**

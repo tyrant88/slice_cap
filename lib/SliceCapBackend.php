@@ -28,10 +28,19 @@ final class SliceCapBackend
         // pruefen selbst, ob sie etwas beizutragen haben.
         rex_extension::register('STRUCTURE_CONTENT_SLICE_MENU', self::addSliceButtons(...));
         rex_extension::register('STRUCTURE_CONTENT_MODULE_SELECT', self::addPasteEntry(...));
+        rex_extension::register('STRUCTURE_CONTENT_BEFORE_SLICES', self::addMessage(...));
 
         if (str_starts_with(\rex_request('page', 'string'), 'content/edit')) {
             rex_view::addCssFile(rex_addon::get('slice_cap')->getAssetsUrl('slice_cap.css'));
         }
+    }
+
+    /**
+     * Gibt die vorgemerkte Meldung genau einmal aus, über der Blockliste.
+     */
+    public static function addMessage(rex_extension_point $ep): string
+    {
+        return (string) $ep->getSubject() . (SliceCap::takeFlash() ?? '');
     }
 
     /**
