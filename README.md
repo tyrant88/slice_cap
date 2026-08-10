@@ -43,6 +43,10 @@ Beide betreffen nicht nur dieses AddOn, fallen hier aber auf:
 - **Die Message eines `rex_api_result` erscheint auf `content/edit` zweimal.** Einmal global über der Blockliste (`content.php`, `rex_api_function::getMessage()`) und ein zweites Mal am Block mit der `slice_id` aus der URL: `content.edit.php` übernimmt dieselbe Message nach `$info`, und `rex_article_content_editor` rendert sie „at current slice". Den Core-eigenen API-Funktionen fällt das nicht auf, weil deren Results keine Message tragen. Deshalb laufen die Meldungen hier über `SliceCap::flash()` statt über das Result — siehe `STRUCTURE_CONTENT_BEFORE_SLICES` in `SliceCapBackend`.
 - **`rex_content_service::addSlice()` liefert eine unauflösbare Meldung.** Der Rückgabewert ist `rex_i18n::msg('slice_added')`, und `slice_added` ist in keiner Sprachdatei von `structure` definiert — heraus kommt `[translate:slice_added]`. Deshalb wird der Rückgabewert hier verworfen und die Meldung selbst formuliert.
 
+## Lizenz
+
+MIT — siehe [LICENSE.md](LICENSE.md).
+
 ## Migration von bloecks
 
 `slice_cap` und `bloecks` können parallel installiert sein; die Buttons erscheinen dann doppelt. Nach dem Umstieg `bloecks` deinstallieren und aus `src/addons/` entfernen.
