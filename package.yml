@@ -1,8 +1,8 @@
 package: slice_cap
 
 version: '1.1.2'
-author: 'LuS'
-supportpage: https://github.com/Laut-und-Schoen/slice_cap
+author: 'Norbert Micheel'
+supportpage: https://github.com/tyrant88/slice_cap
 
 requires:
     php:
