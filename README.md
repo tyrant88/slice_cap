@@ -2,7 +2,7 @@
 
 Blöcke im REDAXO-Backend kopieren, ausschneiden und an anderer Stelle wieder einfügen — artikel-, sprach- und ctype-übergreifend.
 
-Ersatz für `bloecks/cutncopy`. Der Nachbau war nötig, weil bloecks 4 den Block anlegt, indem es ein `save=1` samt `REX_INPUT_*` in `$_REQUEST` fälscht und damit den Core-Formularpfad simuliert. Seit structure 2.20.3 (REDAXO 5.21.3) prüft der Core dort einen CSRF-Token, und der Trick fällt durch. `slice_cap` benutzt stattdessen einen eigenen `rex_api_function`-Endpunkt und `rex_content_service::addSlice()`.
+Ersatz für `bloecks/cutncopy`. Wichtigstes Feature: macht nur genau das, was nötig ist und verhält sich, wie man es erwartet. Seit structure 2.20.3 (REDAXO 5.21.3) prüft der Core dort einen CSRF-Token, und der Trick fällt durch. `slice_cap` benutzt stattdessen einen eigenen `rex_api_function`-Endpunkt und `rex_content_service::addSlice()`.
 
 ## Bedienung
 
