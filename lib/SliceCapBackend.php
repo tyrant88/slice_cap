@@ -137,7 +137,9 @@ final class SliceCapBackend
             'slice_cap_action' => 'paste',
         ] + rex_api_slice_cap::getUrlParams());
 
-        $label = \rex_escape(self::getPasteLabel($row, $action));
+        // getPasteLabel() liefert rex_i18n::msg(), das Meldung samt Platzhaltern
+        // bereits escaped -- ein zweites rex_escape() wuerde &quot; sichtbar machen.
+        $label = self::getPasteLabel($row, $action);
 
         $item = '<li class="slice-cap-paste slice-cap-paste-' . $action . '">'
             . '<a href="' . $url . '" data-pjax-no-history="true">' . $label . '</a></li>';
