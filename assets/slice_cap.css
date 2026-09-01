@@ -17,8 +17,13 @@
     color: #fff;
 }
 
-.slice-cap-paste {
+li.slice-cap-paste {
     border-bottom: 1px solid #ccc;
+}
+
+/* Fallback ohne Dropdown: eigener Button unter der Blockauswahl */
+.slice-cap-paste-standalone {
+    margin-top: 5px;
 }
 
 .slice-cap-paste > a:before {

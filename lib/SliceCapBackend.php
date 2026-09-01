@@ -137,13 +137,11 @@ final class SliceCapBackend
             'slice_cap_action' => 'paste',
         ] + rex_api_slice_cap::getUrlParams());
 
-        $item = '<li class="slice-cap-paste slice-cap-paste-' . $action . '">'
-            . '<a href="' . $url . '" data-pjax-no-history="true">'
-            . \rex_escape(self::getPasteLabel($row, $action))
-            . '</a></li>';
+        $label = \rex_escape(self::getPasteLabel($row, $action));
 
-        // Ist das Dropdown-Fragment ueberschrieben und passt das Muster nicht,
-        // bleibt das Markup unangetastet statt kaputt.
+        $item = '<li class="slice-cap-paste slice-cap-paste-' . $action . '">'
+            . '<a href="' . $url . '" data-pjax-no-history="true">' . $label . '</a></li>';
+
         $patched = preg_replace_callback(
             '/<ul\b[^>]*\bdropdown-menu\b[^>]*>/i',
             static fn (array $matches): string => $matches[0] . $item,
@@ -151,7 +149,18 @@ final class SliceCapBackend
             1,
         );
 
-        return $patched ?? $subject;
+        if (null !== $patched && $patched !== $subject) {
+            return $patched;
+        }
+
+        // Kein Dropdown im Markup: entweder ist das Fragment ueberschrieben, oder
+        // ein anderes Addon (z. B. module_preview) hat die Blockauswahl komplett
+        // durch einen eigenen Button ersetzt. Dann steht der Einfuegen-Eintrag als
+        // eigener Button darunter, statt ersatzlos zu verschwinden.
+        return $subject
+            . '<div class="btn-block slice-cap-paste slice-cap-paste-standalone slice-cap-paste-' . $action . '">'
+            . '<a class="btn btn-default btn-block" href="' . $url . '" data-pjax-no-history="true">' . $label . '</a>'
+            . '</div>';
     }
 
     /**
