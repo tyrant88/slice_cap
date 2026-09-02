@@ -21,9 +21,28 @@ li.slice-cap-paste {
     border-bottom: 1px solid #ccc;
 }
 
-/* Fallback ohne Dropdown: eigener Button unter der Blockauswahl */
+/* Fallback ohne Dropdown: eigener Button neben der Blockauswahl.
+   Ohne :has-Unterstuetzung steht er darunter, deshalb der margin-top.
+   Nebeneinander-Layout: thx @ischfr */
 .slice-cap-paste-standalone {
     margin-top: 5px;
+}
+
+.rex-slice-select:has(.slice-cap-paste-standalone) {
+    display: flex;
+    gap: 8px;
+}
+
+.rex-slice-select:has(.slice-cap-paste-standalone) .slice-cap-paste-standalone {
+    margin-top: 0;
+    min-width: 200px;
+    width: 30%;
+}
+
+/* Lange Blocknamen kuerzen, statt den Button zu sprengen */
+.slice-cap-paste-standalone > a {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .slice-cap-paste > a:before {

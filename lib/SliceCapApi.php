@@ -142,6 +142,8 @@ class rex_api_slice_cap extends rex_api_function
             rex_content_service::deleteSlice((int) $row['id']);
             SliceCap::clear();
             $message .= ' ' . rex_i18n::msg('slice_cap_source_removed');
+        } elseif (SliceCap::clearsAfterPaste()) {
+            SliceCap::clear();
         }
 
         SliceCap::flash($message);

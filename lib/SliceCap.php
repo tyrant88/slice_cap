@@ -112,6 +112,16 @@ final class SliceCap
         return array_diff_key($row, array_flip(self::STRUCTURAL_COLUMNS));
     }
 
+    /**
+     * Soll die Zwischenablage nach dem Einfügen geleert werden? Schalter in
+     * der package.yml — ein ausgeschnittener Block verlässt sie ohnehin immer,
+     * die Einstellung betrifft also nur kopierte.
+     */
+    public static function clearsAfterPaste(): bool
+    {
+        return (bool) \rex_addon::get('slice_cap')->getProperty('clear_clipboard_after_paste', true);
+    }
+
     public static function mayUse(rex_user $user): bool
     {
         return $user->hasPerm('slice_cap[]');

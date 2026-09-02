@@ -1,8 +1,10 @@
 package: slice_cap
 
-version: '1.1.4'
+version: '1.1.5'
 author: 'Norbert Micheel'
 supportpage: https://github.com/tyrant88/slice_cap
+
+clear_clipboard_after_paste: true
 
 requires:
     php:

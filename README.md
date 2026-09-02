@@ -8,7 +8,17 @@ Ersatz für `bloecks/cutncopy`. Wichtigstes Feature: macht nur genau das, was n�
 
 - An jedem Block liegen im Menü zwei zusätzliche Buttons: **Kopieren** und **Ausschneiden**. Der gemerkte Block wird farbig markiert; derselbe Button nochmal geklickt leert die Zwischenablage.
 - Liegt etwas in der Zwischenablage, erscheint in jedem **Block hinzufügen**-Dropdown ganz oben ein Einfügen-Eintrag. Er wird nur dort angezeigt, wo der Block auch landen darf.
-- Beim Einfügen eines ausgeschnittenen Blocks wird die Quelle entfernt und die Zwischenablage geleert; eine Kopie bleibt liegen und kann mehrfach eingefügt werden.
+- Beim Einfügen wird die Quelle eines ausgeschnittenen Blocks entfernt, und die Zwischenablage ist danach leer. Soll eine Kopie liegen bleiben und sich mehrfach einfügen lassen, siehe Einstellung.
+
+## Einstellung
+
+In der `package.yml`:
+
+```yaml
+clear_clipboard_after_paste: true
+```
+
+Standard. Auf `false` gesetzt, bleibt eine **Kopie** nach dem Einfügen in der Zwischenablage liegen und lässt sich mehrfach einfügen. Ein ausgeschnittener Block verlässt sie in beiden Fällen. Nach dem Ändern den REDAXO-Cache leeren, die `package.yml` wird zwischengespeichert.
 
 ## Berechtigungen
 
