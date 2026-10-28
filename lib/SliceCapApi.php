@@ -139,7 +139,9 @@ class rex_api_slice_cap extends rex_api_function
         $message = rex_i18n::msg('slice_cap_pasted');
 
         if (SliceCap::ACTION_CUT === $action) {
-            rex_content_service::deleteSlice((int) $row['id']);
+            if (rex_content_service::deleteSlice((int) $row['id'])) {
+                $this->afterSourceDeleted($row);
+            }
             SliceCap::clear();
             $message .= ' ' . rex_i18n::msg('slice_cap_source_removed');
         } elseif (SliceCap::clearsAfterPaste()) {
@@ -154,6 +156,45 @@ class rex_api_slice_cap extends rex_api_function
         $result->setRequiresReboot(true);
 
         return $result;
+    }
+
+    private function afterSourceDeleted(array $row): void
+    {
+        $articleId = (int) $row['article_id'];
+        $clang = (int) $row['clang_id'];
+
+        $sql = rex_sql::factory();
+        $sql->setTable(rex::getTable('article'));
+        $sql->setWhere(['id' => $articleId, 'clang_id' => $clang]);
+        $sql->addGlobalUpdateFields();
+        $sql->update();
+
+        rex_article_cache::delete($articleId, $clang);
+
+        rex_extension::registerPoint(new rex_extension_point('STRUCTURE_CONTENT_ARTICLE_UPDATED', '', [
+            'id' => $articleId,
+            'clang' => $clang,
+        ]));
+
+        $article = rex_article::get($articleId, $clang);
+
+        if (!$article instanceof rex_article) {
+            return;
+        }
+
+        rex_extension::registerPoint(new rex_extension_point('SLICE_DELETED', '', [
+            'article_id' => $articleId,
+            'clang' => $clang,
+            'function' => 'delete',
+            'slice_id' => (int) $row['id'],
+            'page' => rex_be_controller::getCurrentPage(),
+            'ctype' => (int) $row['ctype_id'],
+            'category_id' => $article->getCategoryId(),
+            'module_id' => (int) $row['module_id'],
+            'article_revision' => 0,
+            'slice_revision' => (int) $row['revision'],
+        ]));
+        rex_extension::registerPoint(new rex_extension_point_art_content_updated($article, 'slice_deleted'));
     }
 
     /**
