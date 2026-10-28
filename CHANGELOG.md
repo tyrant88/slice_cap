@@ -3,7 +3,6 @@
 ## 1.1.6 – 2026-10-28
 
 - Nach dem Einfügen eines ausgeschnittenen Blocks wird der Quellartikel jetzt so behandelt wie beim Löschen über die Content-Seite: Update-Felder setzen, Artikel-Cache löschen, `STRUCTURE_CONTENT_ARTICLE_UPDATED`, `SLICE_DELETED` und `ART_CONTENT_UPDATED` auslösen. Bisher zeigte das Frontend des Quellartikels den Block weiter an, wenn er in einen anderen Artikel oder eine andere Sprache verschoben wurde.
-- Modul-Aktionen laufen beim Einfügen und Ausschneiden bewusst nicht: Ausschneiden verschiebt einen Block, es legt keinen an und löscht keinen.
 
 ## 1.1.5 – 2026-09-02
 
